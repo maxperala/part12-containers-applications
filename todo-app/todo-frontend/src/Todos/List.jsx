@@ -1,6 +1,8 @@
 import React from 'react'
+import Todo from "./Todo"
 
 const TodoList = ({ todos, deleteTodo, completeTodo }) => {
+
   const onClickDelete = (todo) => () => {
     deleteTodo(todo)
   }
@@ -11,37 +13,18 @@ const TodoList = ({ todos, deleteTodo, completeTodo }) => {
 
   return (
     <>
-      {todos.map(todo => {
-        const doneInfo = (
-          <>
-            <span>This todo is done</span>
-            <span>
-              <button onClick={onClickDelete(todo)}> Delete </button>
-            </span>
-          </>
-        )
-
-        const notDoneInfo = (
-          <>
-            <span>
-              This todo is not done
-            </span>
-            <span>
-              <button onClick={onClickDelete(todo)}> Delete </button>
-              <button onClick={onClickComplete(todo)}> Set as done </button>
-            </span>
-          </>
-        )
-
+      {todos.map((todo, index) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '70%', margin: 'auto' }}>
-            <span>
-              {todo.text} 
-            </span>
-            {todo.done ? doneInfo : notDoneInfo}
-          </div>
+          <React.Fragment key={todo.id || index}>
+          <Todo 
+            todo={todo} 
+            onClickDelete={onClickDelete} 
+            onClickComplete={onClickComplete} 
+          />
+          {index !== todos.length - 1 && <hr />}
+        </React.Fragment>
         )
-      }).reduce((acc, cur) => [...acc, <hr />, cur], [])}
+      })}
     </>
   )
 }
