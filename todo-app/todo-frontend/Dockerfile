@@ -1,5 +1,8 @@
 FROM node:21 AS build-stage
 
+ARG VITE_BACKEND_URL
+ENV VITE_BACKEND_URL=${VITE_BACKEND_URL}
+
 WORKDIR /usr/src/app
 
 COPY  . .
@@ -7,8 +10,6 @@ COPY  . .
 RUN npm ci
 
 RUN npm run test
-
-ENV VITE_BACKEND_URL=http://localhost:3000
 
 RUN npm run build
 

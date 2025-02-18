@@ -1,28 +1,23 @@
 services:
   app:
-    image: todo-front-dev
+    image: todo-front
     build:
       context: ./todo-frontend
-      dockerfile: ./dev.Dockerfile
-    volumes:
-      - ./todo-frontend:/usr/src/app
-    container_name: todo-front-dev
-    environment:
-      - VITE_BACKEND_URL=http://localhost:8080/api
+      dockerfile: Dockerfile
+      args:
+        VITE_BACKEND_URL: http://localhost:8080/api
+    container_name: todo-front
     depends_on:
       - server
-
   server:
-    image: todo-back-dev
+    image: todo-back
     build:
       context: ./todo-backend
-      dockerfile: ./dev.Dockerfile
-    volumes:
-      - ./todo-backend:/usr/src/app
+      dockerfile: Dockerfile
     environment:
       - REDIS_URL=redis://redis:6379
       - MONGO_URL=mongodb://the_username:the_password@mongo:27017/the_database
-    container_name: todo-back-dev
+    container_name: todo-back
     depends_on:
       - mongo
       - redis
@@ -30,7 +25,7 @@ services:
   nginx:
     image: nginx:1.20.1
     volumes:
-      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - 8080:80
     container_name: reverse-proxy
