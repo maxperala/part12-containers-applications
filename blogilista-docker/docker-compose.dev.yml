@@ -1,0 +1,41 @@
+services:
+  server:
+    image: blog-back-dev
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    environment:
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/db
+      - TEST_MONGODB_URI=mongodb://mongo:27017/testdb
+      - SECRET=salaisuus
+    container_name: todo-back-dev
+    volumes:
+      - ./backend:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    volumes:
+      - ./backend/mongo_data:/data/db
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    depends_on:
+      - server
+      - app
+  app:
+    image: blog-front-dev
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    container_name: blog-front-dev
+    volumes:
+      - ./frontend:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - server
